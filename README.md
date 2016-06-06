@@ -13,6 +13,7 @@ Run These commands for Resolving the dependencies.
 
 ```
 pip3 install telepot
+pip3 install aiohttp
 pip3 install beautifulsoup4
 pip3 install youtube-dl
 pip3 install pafy
