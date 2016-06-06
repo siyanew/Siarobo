@@ -9,15 +9,24 @@ sudo apt-get update
 sudo apt-get install python3.5
 sudo apt-get install python3-pip
 ```
+OR Compile with Source:
+```
+wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
+tar xfz Python-3.5.*
+cd Python-3.5.*
+./configure --with-ensurepip=install
+make
+sudo make install
+```
 Run These commands for Resolving the dependencies.
 
 ```
-pip3 install telepot
-pip3 install aiohttp
-pip3 install beautifulsoup4
-pip3 install youtube-dl
-pip3 install pafy
-pip3 install demjson
+sudo pip3 install telepot
+sudo pip3 install aiohttp
+sudo pip3 install beautifulsoup4
+sudo pip3 install youtube-dl
+sudo pip3 install pafy
+sudo pip3 install demjson
 ```
 
 Add the bot Token and your id in config.json as a sudo member.
