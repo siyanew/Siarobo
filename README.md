@@ -12,11 +12,11 @@ sudo apt-get install python3-pip
 Run These commands for Resolving the dependencies.
 
 ```
-pip install telepot
-pip install beautifulsoup4
-pip install youtube-dl
-pip install pafy
-pip install demjson
+pip3 install telepot
+pip3 install beautifulsoup4
+pip3 install youtube-dl
+pip3 install pafy
+pip3 install demjson
 ```
 
 Add the bot Token and your id in config.json as a sudo member.
