@@ -139,7 +139,7 @@ def on_callback_query(message):
                         matches = re.findall(pattern, data, re.IGNORECASE)
                         return_value = yield from plugin['callback'](message, matches[0], message['message']['chat']['id'])
                         if return_value:
-                            yield from callback_sender(return_value)
+                            yield from sender(return_value)
                         break
 
 
@@ -223,7 +223,7 @@ def sender(message):
             r = yield from bot.answerCallbackQuery(message.callback_query_id, text=message.text, show_alert=message.show_alert)
         elif message.content_type == "edit_message":
             r = yield from bot.editMessageText(message.msg_identifier, message.text, parse_mode=message.parse_mode, disable_web_page_preview=message.disable_web_page_preview, reply_markup=message.reply_markup)
-                return r
+        return r
     except:
         pass
 
