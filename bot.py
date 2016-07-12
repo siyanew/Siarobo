@@ -10,7 +10,7 @@ import asyncio
 
 import io
 import telepot
-import telepot.async
+import telepot.aio
 from message import Message
 
 
@@ -43,7 +43,7 @@ def load_plugins():
     for pluginName in config['plugins']:
         plugin_dir = join(WD, "plugins", pluginName + ".py")
         values = {}
-        with open(plugin_dir) as f:
+        with open(plugin_dir, encoding="utf-8") as f:
             code = compile(f.read(), plugin_dir, 'exec')
             exec(code, values)
             f.close()
