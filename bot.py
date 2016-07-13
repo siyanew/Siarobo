@@ -273,8 +273,8 @@ async def check_queue():
 
 
 load_plugins()
-bot = telepot.async.Bot(config['token'])
-answerer = telepot.async.helper.Answerer(bot)
+bot = telepot.aio.Bot(config['token'])
+answerer = telepot.aio.helper.Answerer(bot)
 
 loop = asyncio.get_event_loop()
 loop.create_task(bot.message_loop({'chat': handle_messages,
