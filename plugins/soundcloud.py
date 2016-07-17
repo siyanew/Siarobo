@@ -5,17 +5,18 @@ import demjson
 from bot import user_steps, sender, get, downloader
 from message import Message
 
-client_id = ''#YOUR CLIENT ID
+client_id = '' # YOUR CLIENT ID
 
 
-async def search(query):
+@asyncio.coroutine
+def search(query):
     global guest_client_id
 
     search_url = 'https://api.soundcloud.com/search?q=%s&facet=model&limit=30&offset=0&linked_partitioning=1&client_id='+client_id
 
     url = search_url % query
 
-    response = await get(url)
+    response = yield from get(url)
     r = demjson.decode(response)
     res = []
     for entity in r['collection']:
@@ -24,24 +25,25 @@ async def search(query):
     return res
 
 
-async def getfile(url):
-    response = await get(
+@asyncio.coroutine
+def getfile(url):
+    response = yield from get(
         "https://api.soundcloud.com/resolve?url={}&client_id="+client_id.format(url))
     r = demjson.decode(response)
     return r['stream_url'] + "?client_id="+client_id
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     from_id = message['from']['id']
     if step == 0:
-        await sender(
+        yield from sender(
             Message(chat_id).set_text("*Please Wait*\nI'm Searching all Music with this name", parse_mode="markdown"))
         user_steps[from_id] = {"name": "Soundcloud", "step": 1, "data": {}}
         i = 0
         show_keyboard = {'keyboard': [], "selective": True}
         matches = matches.replace(" ", "+")
-        for song in await search(matches):
+        for song in yield from search(matches):
             title, link = song[0], song[1]
             user_steps[from_id]['data'][title] = link
             show_keyboard['keyboard'].append([title])
@@ -59,10 +61,10 @@ async def run(message, matches, chat_id, step):
     elif step == 1:
         try:
             hide_keyboard = {'hide_keyboard': True, "selective": True}
-            await sender(Message(chat_id).set_text("*Please Wait*\nLet me Save this Music For You",
+            yield from sender(Message(chat_id).set_text("*Please Wait*\nLet me Save this Music For You",
                                                    reply_to_message_id=message['message_id'],
                                                    reply_markup=hide_keyboard, parse_mode="markdown"))
-            await downloader(await getfile(user_steps[from_id]['data'][message['text']]),
+            yield from downloader(yield from getfile(user_steps[from_id]['data'][message['text']]),
                              "tmp/{}.mp3".format(message['text']))
             del user_steps[from_id]
             return [Message(chat_id).set_audio("tmp/{}.mp3".format(message['text']), title=message['text'],

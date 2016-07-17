@@ -234,13 +234,14 @@ def download(file_id, path):
     return path
 
 
-async def downloader(url, path, params=None):
+@asyncio.coroutine
+def downloader(url, path, params=None):
         try:
             d = path if isinstance(path, io.IOBase) else open(path, 'wb')
             with aiohttp.ClientSession() as session:
                 async with session.get(url, params=params) as r:
                     while 1:
-                        chunk = await r.content.read()
+                        chunk = yield from r.content.read()
                         if not chunk:
                             break
                         d.write(chunk)
@@ -251,30 +252,32 @@ async def downloader(url, path, params=None):
                 d.close()
 
 
-async def get_stream(url, params=None):
+@asyncio.coroutine
+def get_stream(url, params=None):
     connector = aiohttp.TCPConnector(verify_ssl=False)
     with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url, params=params) as resp:
-            return await resp
+            return yield from resp
 
 
-async def get(url, params=None, headers=None):
+@asyncio.coroutine
+def get(url, params=None, headers=None):
     connector = aiohttp.TCPConnector(verify_ssl=False)
     with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url, params=params, headers=headers) as resp:
-            return await resp.text()
+            return yield from resp.text()
 
-
-async def check_queue():
+@asyncio.coroutine
+def check_queue():
     while 1:
         while not sender_queue.empty():
-            await sender(sender_queue.get())
-        await asyncio.sleep(0.1)
+            yield from sender(sender_queue.get())
+        yield from asyncio.sleep(0.1)
 
 
 load_plugins()
-bot = telepot.async.Bot(config['token'])
-answerer = telepot.async.helper.Answerer(bot)
+bot = telepot.aio.Bot(config['token'])
+answerer = telepot.aio.helper.Answerer(bot)
 
 loop = asyncio.get_event_loop()
 loop.create_task(bot.message_loop({'chat': handle_messages,

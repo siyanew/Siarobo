@@ -8,24 +8,24 @@ from message import Message
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     exp = matches
     payload = {
         'expr': exp
     }
-    req = await get("http://api.mathjs.org/v1/", params=payload)
+    req = yield from get("http://api.mathjs.org/v1/", params=payload)
     if req:
         return [Message(chat_id).set_text(matches + " = " + req)]
     return [Message(chat_id).set_text("Oops,\nSomething went wrong!")]
 
 
 @asyncio.coroutine
-async def inline(message, matches, chat_id, step):
+def inline(message, matches, chat_id, step):
     exp = matches
     payload = {
         'expr': exp
     }
-    req = await get("http://api.mathjs.org/v1/", params=payload)
+    req = yield from get("http://api.mathjs.org/v1/", params=payload)
     if req:
         return [InlineQueryResultArticle(
             id=str(uuid.uuid4()), title='Calculator', description=matches + " = " + req,

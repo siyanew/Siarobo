@@ -16,7 +16,7 @@ def sizeof_fmt(num, suffix='B'):
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     from_id = message['from']['id']
     if step == 0:
         video = pafy.new(matches)
@@ -45,18 +45,18 @@ async def run(message, matches, chat_id, step):
             video = user_steps[from_id]['video']
             best = user_steps[from_id]['data'][int(message['text'].split(".")[0]) - 1]
             hide_keyboard = {'hide_keyboard': True, 'selective': True}
-            await sender(
+            yield from sender(
                 Message(chat_id).set_text("*Please Wait*\n_I am Retrieving The Video_", parse_mode="markdown",
                                           reply_to_message_id=message['message_id'], reply_markup=hide_keyboard))
             if best.get_filesize() < 49000000:
                 if best.mediatype == "normal":
                     del user_steps[from_id]
                     filepath = "tmp/{}.{}".format(uuid.uuid4(), best.extension)
-                    await downloader(best.url, filepath)
+                    yield from downloader(best.url, filepath)
                     return [Message(chat_id).set_document(filepath, reply_markup=hide_keyboard)]
                 if best.mediatype == "audio":
                     filepath = "tmp/{}.{}".format(uuid.uuid4(), best.extension)
-                    await downloader(best.url, filepath)
+                    yield from downloader(best.url, filepath)
                     del user_steps[from_id]
                     return [Message(chat_id).set_audio(filepath, performer="@Siarobot", title=video.title,
                                                        reply_markup=hide_keyboard)]

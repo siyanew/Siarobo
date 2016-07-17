@@ -7,7 +7,7 @@ from message import Message
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     from_id = message['from']['id']
     if from_id in user_steps:
         if "Next" in message['text'] and step != user_steps[from_id]['count'] - 1:
@@ -21,7 +21,7 @@ async def run(message, matches, chat_id, step):
             return [Message(chat_id).set_text("<b>Wrong Input!</b>\n<i>Try Again</i>", parse_mode="html")]
     if step == 0:
         if from_id not in user_steps:
-            page_content = await get(
+            page_content = yield from get(
                 "http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + matches.replace(" ", "+"))
             json_datas = json.loads(page_content)
             json_data = json_datas['results']
@@ -52,7 +52,7 @@ async def run(message, matches, chat_id, step):
             for i in json_data[step]['pronunciations']:
                 for j in i['audio']:
                     res.append(Message(chat_id).set_audio(
-                        await downloader("http://api.pearson.com" + j['url'], "tmp/{}.mp3".format(uuid.uuid4())),
+                        yield from downloader("http://api.pearson.com" + j['url'], "tmp/{}.mp3".format(uuid.uuid4())),
                         performer=j['lang'], title=json_data[step]['headword']))
         return res
     elif step > 0:
@@ -75,7 +75,7 @@ async def run(message, matches, chat_id, step):
             for i in json_data[step]['pronunciations']:
                 for j in i['audio']:
                     res.append(Message(chat_id).set_audio(
-                        await downloader("http://api.pearson.com" + j['url'], "tmp/{}.mp3".format(uuid.uuid4())),
+                        yield from downloader("http://api.pearson.com" + j['url'], "tmp/{}.mp3".format(uuid.uuid4())),
                         performer=j['lang'], title=json_data[step]['headword']))
         return res
 

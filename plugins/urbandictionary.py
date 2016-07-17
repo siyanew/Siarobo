@@ -6,7 +6,7 @@ from message import Message
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     from_id = message['from']['id']
     if from_id in user_steps:
         if "Next" in message['text'] and step != user_steps[from_id]['count'] - 1:
@@ -20,7 +20,7 @@ async def run(message, matches, chat_id, step):
             return [Message(chat_id).set_text("<b>Wrong Input !</b>\n\n<i>Try Again</i>", parse_mode="html")]
     if step == 0:
         if from_id not in user_steps:
-            page_content = await get("http://api.urbandictionary.com/v0/define?term=" + matches)
+            page_content = yield from get("http://api.urbandictionary.com/v0/define?term=" + matches)
             json_data = json.loads(page_content)
             if not json_data['list']:
                 return [Message(chat_id).set_text("<b>Result Not Found !</b>", parse_mode="html")]

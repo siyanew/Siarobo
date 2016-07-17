@@ -25,13 +25,13 @@ icons = {'01d': '🌞',
          }
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
+def run(message, matches, chat_id, step):
     payload = {
             'q': matches,
             'units': "metric",
             'appid': ''#Your Open Weather Api Code
             }
-    req = await get("http://api.openweathermap.org/data/2.5/weather", params=payload)
+    req = yield from get("http://api.openweathermap.org/data/2.5/weather", params=payload)
     try:
         data = json.loads(req)
         cityName = "{}, {}".format(data["name"], data["sys"]["country"])

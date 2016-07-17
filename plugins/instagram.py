@@ -12,8 +12,8 @@ from message import Message
 
 
 @asyncio.coroutine
-async def run(message, matches, chat_id, step):
-    response = await get(message['text'])
+def run(message, matches, chat_id, step):
+    response = yield from get(message['text'])
     soup = BeautifulSoup(response, "html.parser")
     image = soup.find("meta", {"property": "og:image"})
     video = soup.find("meta", {"property": "og:video"})
@@ -29,7 +29,7 @@ async def run(message, matches, chat_id, step):
 
 
 @asyncio.coroutine
-async def inline(message, matches, chat_id, step):
+def inline(message, matches, chat_id, step):
     query_id, from_id, query = telepot.glance(message, flavor='inline_query')
     response = requests.get(query)
     soup = BeautifulSoup(response.text, "html.parser")
