@@ -10,7 +10,7 @@ import asyncio
 
 import io
 import telepot
-import telepot.async
+import telepot.aio
 from message import Message
 
 
@@ -43,7 +43,7 @@ def load_plugins():
     for pluginName in config['plugins']:
         plugin_dir = join(WD, "plugins", pluginName + ".py")
         values = {}
-        with open(plugin_dir) as f:
+        with open(plugin_dir, encoding="utf-8") as f:
             code = compile(f.read(), plugin_dir, 'exec')
             exec(code, values)
             f.close()
@@ -273,8 +273,8 @@ async def check_queue():
 
 
 load_plugins()
-bot = telepot.async.Bot(config['token'])
-answerer = telepot.async.helper.Answerer(bot)
+bot = telepot.aio.Bot(config['token'])
+answerer = telepot.aio.helper.Answerer(bot)
 
 loop = asyncio.get_event_loop()
 loop.create_task(bot.message_loop({'chat': handle_messages,

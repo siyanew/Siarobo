@@ -21,7 +21,8 @@ sudo make install
 Run These commands for Resolving the dependencies.
 
 ```
-sudo pip3 install telepot
+sudo pip3 install pip -U
+sudo pip3 install telepot -U
 sudo pip3 install aiohttp
 sudo pip3 install beautifulsoup4
 sudo pip3 install youtube-dl
