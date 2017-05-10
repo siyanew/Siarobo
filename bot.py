@@ -11,6 +11,7 @@ import asyncio
 import io
 import telepot
 import telepot.aio
+from telepot.aio.loop import MessageLoop
 from message import Message
 
 
@@ -277,11 +278,11 @@ bot = telepot.aio.Bot(config['token'])
 answerer = telepot.aio.helper.Answerer(bot)
 
 loop = asyncio.get_event_loop()
-loop.create_task(bot.message_loop({'chat': handle_messages,
+loop.create_task(MessageLoop(bot, {'chat': handle_messages,
                                    'callback_query': on_callback_query,
                                    'inline_query': on_inline_query,
                                    'chosen_inline_result': on_chosen_inline_result,
-                                   'edited_chat': handle_messages}))
+                                   'edited_chat': handle_messages}).run_forever())
 loop.create_task(check_queue())
 print('Bot Started ...')
 
